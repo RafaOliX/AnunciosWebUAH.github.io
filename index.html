@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Portal de Anuncios - Registro, Login y Anuncios</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Reset general */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f4f9;
+      line-height: 1.6;
+      color: #333;
+    }
+
+    /* Estilos Generales */
+    .page {
+      display: none;
+    }
+
+    .active {
+      display: block;
+    }
+
+    .form-container {
+      width: 350px;
+      margin: 50px auto;
+      padding: 25px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #d1d5db;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    button {
+      background: #0056b3;
+      color: #ffffff;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #003d80;
+    }
+
+    a {
+      color: #0056b3;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* Modal de Anuncio */
+    #loginAdModal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+    }
+
+    #loginAdContent {
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      width: 350px;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    #loginAdContent button.close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      border: none;
+      background: transparent;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: #555;
+    }
+
+    /* Portal Principal */
+    header {
+      background-color: #0056b3;
+      color: #ffffff;
+      padding: 20px;
+      text-align: center;
+      border-bottom: 4px solid #003d80;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      margin-bottom: 5px;
+    }
+
+    header p {
+      font-size: 1.2rem;
+      margin-top: 5px;
+    }
+
+    nav a {
+      color: #ffffff;
+      margin: 0 10px;
+      font-size: 1rem;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .content-wrapper {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 20px;
+      display: flex;
+      gap: 20px;
+    }
+
+    .content-main {
+      flex: 1;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    footer {
+      background-color: #003d80;
+      color: #ffffff;
+      text-align: center;
+      padding: 15px;
+      margin-top: 40px;
+      font-size: 1rem;
+    }
+
+    /* Anuncios */
+    .ad-banner {
+      margin: 20px 0;
+      padding: 15px;
+      background-color: #ffffff;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .ad-banner:hover {
+      transform: scale(1.03);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .ad-banner img {
+      max-width: 100%;
+      border-bottom: 1px solid #d1d5db;
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
+
+    .ad-banner h3 {
+      font-size: 1.2rem;
+      margin: 10px 0;
+      color: #333;
+    }
+
+    .ad-info {
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    /* Aside */
+    aside {
+      width: 300px;
+      background-color: #ffffff;
+      padding: 20px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      height: fit-content;
+    }
+
+    aside h3 {
+      margin-top: 0;
+      font-size: 1.5rem;
+      color: #0056b3;
+    }
+
+    aside ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    aside ul li {
+      margin-bottom: 10px;
+    }
+
+    aside ul li img {
+      width: 100%;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    aside ul li img:hover {
+      transform: scale(1.05);
+    }
+
+    /* Anuncio Emergente al Hacer Scroll */
+    #scrollAd {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 350px;
+      background-color: #ffffff;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      z-index: 1000;
+      box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+      padding: 15px;
+    }
+
+    #scrollAd h4 {
+      margin: 0 0 10px;
+      font-size: 1.2rem;
+      text-align: center;
+      color: #0056b3;
+    }
+
+    #scrollAd button.close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      border: none;
+      background: transparent;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: #555;
+    }
+
+     /* Modal de Anuncio al Iniciar Sesión */
+     /* Botón de cierre mejorado */
+  button.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: none;
+    background: #ffffff; /* Fondo blanco para mayor contraste */
+    color: #555;
+    font-size: 1.5rem;
+    cursor: pointer;
+    border-radius: 50%; /* Forma circular */
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  button.close:hover {
+    background: #f4f4f4; /* Fondo más claro al pasar el mouse */
+    color: #000; /* Color del texto más oscuro */
+  }
+  #loginAdModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+  }
+
+  #loginAdContent {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 350px;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.5s ease-in-out;
+  }
+
+  #loginAdContent h4 {
+    font-size: 1.5rem;
+    color: #0056b3;
+    margin-bottom: 10px;
+  }
+
+  #loginAdContent p {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 15px;
+  }
+
+  #loginAdContent img {
+    max-width: 100%;
+    border-radius: 8px;
+  }
+
+  #loginAdContent button.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: none;
+    background: transparent;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #555;
+    transition: color 0.3s ease;
+  }
+
+  #loginAdContent button.close:hover {
+    color: #000;
+  }
+
+  /* Anuncio Emergente al Hacer Scroll */
+  #scrollAd {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 350px;
+    background-color: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    z-index: 1000;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+    padding: 15px;
+    animation: slideIn 0.5s ease-in-out;
+  }
+
+  #scrollAd h4 {
+    margin: 0 0 10px;
+    font-size: 1.2rem;
+    text-align: center;
+    color: #0056b3;
+  }
+
+  #scrollAd button.close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: none;
+    background: transparent;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #555;
+    transition: color 0.3s ease;
+  }
+
+  #scrollAd button.close:hover {
+    color: #000;
+  }
+
+  /* Animaciones */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  </style>
+</head>
+<body>
+  <!-- =======================
+       Página de Registro
+       ======================= -->
+  <div id="registrationPage" class="page">
+      <div class="form-container">
+          <h2>Registro Rápido</h2>
+          <input type="text" id="regUsername" placeholder="Nombre de usuario">
+          <input type="password" id="regPassword" placeholder="Contraseña">
+          <button onclick="registerUser()">Registrar</button>
+          <p>¿Ya tienes cuenta? <a href="#" onclick="showLoginPage()">Inicia sesión</a></p>
+      </div>
+  </div>
+
+  <!-- =======================
+       Página de Login
+       ======================= -->
+  <div id="loginPage" class="page">
+      <div class="form-container">
+          <h2>Iniciar Sesión</h2>
+          <input type="text" id="loginUsername" placeholder="Nombre de usuario">
+          <input type="password" id="loginPassword" placeholder="Contraseña">
+          <button onclick="loginUser()">Iniciar Sesión</button>
+          <p>¿No tienes cuenta? <a href="#" onclick="showRegistrationPage()">Regístrate</a></p>
+          <p id="loginError" style="color:red;"></p>
+      </div>
+  </div>
+
+  <!-- =======================
+       Página Principal / Portal de Anuncios
+       ======================= -->
+  <div id="mainPage" class="page active">
+  <header>
+    <h1>Portal de Anuncios</h1>
+    <p>Sistema de pujas y anuncios dinámicos</p>
+    <nav>
+      <a href="#">Inicio</a>
+      <a href="#">Nacionales</a>
+      <a href="#">Internacionales</a>
+      <a href="#">Deportes</a>
+      <a href="#">Cultura</a>
+      <a href="#">Contacto</a>
+    </nav>
+  </header>
+  <div class="content-wrapper">
+    <div class="content-main">
+      <h1>Los Anuncios en la WEB</h1>
+      <p>
+        Los anuncios en las páginas web son una herramienta clave para monetizar contenido. Los anunciantes pagan por mostrar sus productos o servicios a los usuarios, y los propietarios de las páginas obtienen ingresos por cada clic o impresión en los anuncios. Este modelo de negocio ha permitido que muchas plataformas ofrezcan contenido gratuito a cambio de mostrar publicidad, lo que beneficia tanto a los usuarios como a los creadores de contenido.,     Existen diferentes tipos de anuncios en línea, como banners, videos, ventanas emergentes y anuncios nativos. Los banners son los más comunes y suelen aparecer en la parte superior o lateral de las páginas web. Los videos publicitarios, por otro lado, son más interactivos y suelen captar más la atención del usuario. Las ventanas emergentes, aunque a veces intrusivas, son efectivas para campañas específicas. Los anuncios nativos, en cambio, se integran de manera más natural con el contenido de la página, lo que los hace menos intrusivos y más efectivos en términos de conversión.
+ 
+      </p>
+      <div class="ad-banner" onclick="registerClick(1)">
+        
+        <img src="https://empaklo.com/wp-content/uploads/2023/05/My-project-1-10-1-600x600.jpg" alt="Anuncio 1">
+        <h3>Producto 1</h3>
+        <div class="ad-info" id="ad-info-1">Clicks: 0</div>
+      </div>
+      <p>
+        Además, los anuncios pueden ser personalizados según los intereses de los usuarios. Esto se logra mediante el uso de cookies y datos de navegación. Por ejemplo, si un usuario busca productos electrónicos, es probable que vea anuncios relacionados con tecnología en las páginas que visite. Esta personalización aumenta la relevancia de los anuncios y mejora la experiencia del usuario, ya que los anuncios que se muestran son más acordes a sus intereses y necesidades.,     Sin embargo, la publicidad en línea también enfrenta desafíos. Uno de los principales problemas es el uso de bloqueadores de anuncios, que impiden que los usuarios vean los anuncios en las páginas web. Esto ha llevado a los anunciantes y propietarios de sitios web a buscar formas creativas de integrar la publicidad sin afectar la experiencia del usuario. Por ejemplo, algunos sitios ofrecen contenido premium sin anuncios a cambio de una suscripción, mientras que otros implementan anuncios menos intrusivos para evitar que los usuarios los bloqueen.
+
+      </p>
+      <div class="ad-banner" onclick="registerClick(2)">
+        <img src="https://www.inboundcycle.com/hs-fs/hubfs/anuncios%20publicitarios%20informativos.jpg?width=2560&height=1439&name=anuncios%20publicitarios%20informativos.jpg" alt="Anuncio 2">
+        <h3>Producto 2</h3>
+        <div class="ad-info" id="ad-info-2">Clicks: 0</div>
+      </div>
+      <p>
+        Además, los anuncios pueden ser personalizados según los intereses de los usuarios, utilizando datos como su historial de navegación o ubicación. Esto aumenta la relevancia de los anuncios y mejora la experiencia del usuario.,  Otro desafío es garantizar la privacidad del usuario. Con el aumento de las regulaciones de privacidad, como el Reglamento General de Protección de Datos (GDPR) en Europa, las empresas deben ser transparentes sobre cómo recopilan y utilizan los datos de los usuarios. Esto ha llevado a un cambio hacia modelos de publicidad más éticos y respetuosos con la privacidad. Por ejemplo, muchas empresas ahora permiten a los usuarios optar por no recibir anuncios personalizados, lo que les da más control sobre su experiencia en línea.
+ 
+      </p>
+      <div class="ad-banner" onclick="registerClick(3)">
+        <img src="https://th.bing.com/th/id/R.499f402afcc389ab03a88301326b37d7?rik=KfBnF5M4XPAm5A&pid=ImgRaw&r=0" alt="Anuncio 3">
+        <h3>Producto 3</h3>
+        <div class="ad-info" id="ad-info-3">Clicks: 0</div>
+      </div>
+    </div>
+    <aside>
+      <h3>Información Adicional</h3>
+      <ul id="adList">
+        <li>
+          <img src="https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/66567945175467.58290bda90f31.jpg" alt="Adicional 1" onclick="registerClick(1)">
+        </li>
+        <li>
+          <img src="https://th.bing.com/th/id/OIP.KmWHBN0I9LWE6cZFIqKGrwHaHa?rs=1&pid=ImgDetMain" alt="Adicional 2" onclick="registerClick(2)">
+        </li>
+        <li>
+          <img src="https://th.bing.com/th/id/OIP.Xm1ee3xm_A2MsYh4lLqD3wHaHa?rs=1&pid=ImgDetMain" alt="Adicional 3" onclick="registerClick(3)">
+        </li>
+      </ul>
+    </aside>
+  </div>
+  <footer>
+    <h3>Total de Clicks a Publicidad: <span id="totalClicks">Calculando...</span></h3>
+    <h3>Equivalente en USD: $<span id="totalUSD">Calculando...</span></h3>
+  </footer>
+</div>
+
+  <!-- Modal de Anuncio al Iniciar Sesión -->
+  <div id="loginAdModal" style="display:none;">
+      <div id="loginAdContent">
+          <button class="close" onclick="closeLoginAd()">"X"</button>
+          <h4>Bienvenido a Nuestro Portal</h4>
+          <p>¡Descubre nuestras ofertas publicitarias!</p>
+          <img src="https://th.bing.com/th/id/OIP.Daex7nw0ZBMrnsNRVn6s-QHaEu?rs=1&pid=ImgDetMain" alt="Publicidad">
+      </div>
+  </div>
+
+  <!-- Anuncio Emergente al Hacer Scroll -->
+  <div id="scrollAd" style="display: none;">
+    <button class="close" onclick="closeScrollAd()">X</button>
+    <h4>Publicidad en Video</h4>
+    
+      <iframe width="300" height="300" 
+      src="https://www.youtube.com/embed/sh0QH3Y7ut0?autoplay=1&mute=1" 
+      title="Comercial Balgres (1986)" 
+      frameborder="0" 
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+      referrerpolicy="strict-origin-when-cross-origin" 
+      allowfullscreen>
+    </iframe>      
+  </div>
+
+  <script>
+    let totalBids = 0;
+    const bidValueInUSD = 0.05; // Cada puja equivale a $0.05 USD
+
+    /* Datos iniciales de los anuncios */
+    let adsData = JSON.parse(localStorage.getItem('adsData')) || [
+      { id: 1, title: "Anuncio 1", image: "https://via.placeholder.com/300x100?text=Anuncio+1", clicks: 0 },
+      { id: 2, title: "Anuncio 2", image: "https://via.placeholder.com/300x100?text=Anuncio+2", clicks: 0 },
+      { id: 3, title: "Anuncio 3", image: "https://via.placeholder.com/300x100?text=Anuncio+3", clicks: 0 }
+    ];
+
+    /* Renderiza los anuncios en el contenido principal */
+    function renderAds() {
+      const container = document.getElementById('adsContainer');
+      container.innerHTML = '';
+      adsData.forEach(ad => {
+        const adDiv = document.createElement('div');
+        adDiv.className = 'ad-banner';
+        adDiv.onclick = function() { registerClick(ad.id); };
+        const img = document.createElement('img');
+        img.src = ad.image;
+        img.alt = ad.title;
+        const title = document.createElement('h3');
+        title.textContent = ad.title;
+        const info = document.createElement('div');
+        info.className = 'ad-info';
+        info.id = 'ad-info-' + ad.id;
+        info.textContent = 'Pujas: ' + ad.clicks;
+        adDiv.appendChild(img);
+        adDiv.appendChild(title);
+        adDiv.appendChild(info);
+        container.appendChild(adDiv);
+      });
+    }
+
+    /* Renderiza los anuncios en el apartado de "Información Adicional" */
+    function renderAdList() {
+      const adList = document.getElementById('adList');
+      adList.innerHTML = '';
+      adsData.forEach(ad => {
+        const listItem = document.createElement('li');
+        const img = document.createElement('img');
+        img.src = ad.image;
+        img.alt = ad.title;
+        img.onclick = function() { registerClick(ad.id); };
+        listItem.appendChild(img);
+        adList.appendChild(listItem);
+      });
+    }
+
+    /* Registra un clic en un anuncio */
+    function registerClick(adId) {
+      const ad = adsData.find(item => item.id === adId);
+      if (ad) {
+        ad.clicks++;
+        document.getElementById('ad-info-' + adId).textContent = 'Pujas: ' + ad.clicks;
+        updateTotalClicks();
+        localStorage.setItem('adsData', JSON.stringify(adsData));
+      }
+    }
+
+    /* Actualiza el total de pujas y su conversión a USD */
+    function updateTotalClicks() {
+      const total = adsData.reduce((sum, ad) => sum + ad.clicks, 0);
+      totalBids = total;
+      document.getElementById('totalClicks').textContent = totalBids;
+      document.getElementById('totalUSD').textContent = (totalBids * bidValueInUSD).toFixed(2);
+    }
+
+    /* Al cargar la página, renderiza los anuncios y actualiza las pujas */
+    window.onload = function() {
+      if (sessionStorage.getItem('loggedIn') === 'true') {
+        showMainPage();
+        renderAds();
+        renderAdList();
+        updateTotalClicks();
+      } else if (localStorage.getItem('registeredUser')) {
+        showLoginPage();
+      } else {
+        showRegistrationPage();
+      }
+    };
+
+    /* Funciones para navegar entre "páginas" */
+    function showRegistrationPage() {
+      document.getElementById('registrationPage').classList.add('active');
+      document.getElementById('loginPage').classList.remove('active');
+      document.getElementById('mainPage').classList.remove('active');
+    }
+
+    function showLoginPage() {
+      document.getElementById('registrationPage').classList.remove('active');
+      document.getElementById('loginPage').classList.add('active');
+      document.getElementById('mainPage').classList.remove('active');
+    }
+
+    function showMainPage() {
+      document.getElementById('registrationPage').classList.remove('active');
+      document.getElementById('loginPage').classList.remove('active');
+      document.getElementById('mainPage').classList.add('active');
+      document.getElementById('loginAdModal').style.display = 'flex'; // Mostrar modal
+    }
+
+    /* Registro: almacena datos de usuario en localStorage */
+    function registerUser() {
+      const username = document.getElementById('regUsername').value.trim();
+      const password = document.getElementById('regPassword').value.trim();
+      if (username === '' || password === '') {
+        alert('Por favor, completa ambos campos.');
+        return;
+      }
+      const user = { username, password };
+      localStorage.setItem('registeredUser', JSON.stringify(user));
+      alert('Registro exitoso. Ahora inicia sesión.');
+      showLoginPage();
+    }
+
+    /* Login: valida credenciales y accede al portal */
+    function loginUser() {
+      const username = document.getElementById('loginUsername').value.trim();
+      const password = document.getElementById('loginPassword').value.trim();
+      const storedUser = JSON.parse(localStorage.getItem('registeredUser'));
+      if (storedUser && storedUser.username === username && storedUser.password === password) {
+        sessionStorage.setItem('loggedIn', 'true');
+        showMainPage();
+        renderAds();
+        renderAdList();
+        updateTotalClicks();
+      } else {
+        document.getElementById('loginError').textContent = 'Credenciales incorrectas. Inténtalo de nuevo.';
+      }
+    }
+
+    /* Cierra el modal del anuncio al iniciar sesión */
+    function closeLoginAd() {
+      document.getElementById('loginAdModal').style.display = 'none';
+    }
+
+    let scrollAdDisplayed = false;
+
+    // Detecta el scroll y muestra el anuncio si no se ha mostrado antes
+    window.addEventListener('scroll', function () {
+      if (!scrollAdDisplayed && window.scrollY > 200) {
+        showScrollAd();
+        scrollAdDisplayed = true;
+      }
+    });
+
+    // Muestra el anuncio emergente
+    function showScrollAd() {
+      const scrollAd = document.getElementById('scrollAd');
+      scrollAd.style.display = 'block';
+      scrollAd.style.position = 'fixed';
+      scrollAd.style.bottom = '20px';
+      scrollAd.style.right = '20px';
+      scrollAd.style.width = '350px';
+      scrollAd.style.backgroundColor = '#ffffff';
+      scrollAd.style.border = '1px solid #d1d5db';
+      scrollAd.style.borderRadius = '8px';
+      scrollAd.style.boxShadow = '0px 6px 12px rgba(0, 0, 0, 0.15)';
+      scrollAd.style.padding = '15px';
+      scrollAd.style.zIndex = '1000';
+    }
+
+    // Cierra el anuncio emergente
+    function closeScrollAd() {
+      const scrollAd = document.getElementById('scrollAd');
+      scrollAd.style.display = 'none';
+    }
+  </script>
+</body>
+</html>
